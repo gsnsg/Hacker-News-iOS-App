@@ -3,4 +3,4 @@
 **Demo** <br>
 
 
-<img src="demo.mov" width="250" height="550" />
+<img src="demo.gif" width="250" height="550" />
