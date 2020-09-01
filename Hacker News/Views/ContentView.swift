@@ -13,6 +13,7 @@ struct ContentView: View {
     
 //    @ObservedObject var networkManager = NetworkManager()
     
+    @State var searchtext = ""
     var body: some View {
         TabView {
             FrontPageView().tabItem {
@@ -31,7 +32,6 @@ struct ContentView: View {
                         Text("Search Stories")
                     }
             }
-            
         }
         
         

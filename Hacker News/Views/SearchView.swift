@@ -8,63 +8,39 @@
 
 import SwiftUI
 
+
 struct SearchView: View {
+    
     @State private var input: String = ""
-    
     @ObservedObject var networkManager = NetworkManager()
-    
-    
+    @State private var showingDetail = false
+    @State private var selectedPost: Post?
     
     var body: some View {
         
-        VStack {
-            HStack{
-                TextField("Enter search tag", text: $input, onEditingChanged: { (changed) in
-                    
-                }){
-                    self.fetchData()
-                }
-                    .frame(height: 50)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.leading)
-                    .keyboardType(.webSearch)
-
-                Button(action: {
-                    self.fetchData()
-                    
-                }) {
-                    Image(systemName: "magnifyingglass").frame(width: 50, height: 50).foregroundColor(Color("SearchColor"))
-                }
-            }
-            .padding()
-            
-            
-            NavigationView {
+        NavigationView {
+            VStack {
+                SearchBar(searchText: $input, networkManager: networkManager)
                 List(networkManager.posts) {post in
                     HStack {
-                        NavigationLink(destination: DetailView(url: post.url)) {
-                            VStack {
-                                Image(systemName: "arrowtriangle.up.square.fill")
-                                Text("\(post.points)")
-                            }
-                            Text(post.title)
+                        VStack {
+                            Image(systemName: "arrowtriangle.up.square.fill")
+                            Text("\(post.points)")
                         }
-                        
+                        Text(post.title)
+                    }.onTapGesture {
+                        self.showingDetail.toggle()
+                        self.selectedPost = post
                     }
-                }.navigationBarTitle("")
-                .navigationBarHidden(true)
+                }
+            }.navigationBarTitle("Search")
+                .sheet(isPresented: $showingDetail) {
+                    WebView(urlString: self.selectedPost!.url)
             }
         }
     }
     
-    fileprivate func fetchData() {
-        if self.input.count != 0 {
-            let tagName = self.input.trimmingCharacters(in: .whitespacesAndNewlines)
-            print(tagName)
-            self.networkManager.fetchPostsByTag(tagName: tagName)
-        }
-        self.input = ""
-    }
+    
 }
 
 struct SearchView_Previews: PreviewProvider {
